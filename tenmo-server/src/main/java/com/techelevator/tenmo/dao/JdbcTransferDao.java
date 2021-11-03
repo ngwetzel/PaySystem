@@ -1,15 +1,16 @@
 package com.techelevator.tenmo.dao;
 
-<<<<<<< HEAD
 import com.techelevator.tenmo.model.Transfer;
+import com.techelevator.tenmo.model.Transfers;
 import com.techelevator.tenmo.model.User;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-public class JdbcTransferDao implements TransferDAO{
+public class JdbcTransferDao implements TransferDao{
 
     private JdbcTemplate jdbcTemplate;
 
@@ -72,76 +73,23 @@ public class JdbcTransferDao implements TransferDAO{
     }
 
 
-=======
-import com.techelevator.tenmo.model.Transfers;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.support.rowset.SqlRowSet;
-
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-
-public class JdbcTransferDao implements TransferDao{
-
-    private JdbcTemplate jdbcTemplate;
-
-
     @Override
     public List<Transfers> allTransfers(Long userID) {
-    List<Transfers> list = new ArrayList<>();
-    String sql = "SELECT TRANSFER.* " +
-            "FROM transfers " +
-            "JOIN accounts ON transfer.accounts_from = accounts.account_id " +
-            "WHERE accounts.user_id = ?;";
-        SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sql, userID);
-        while (rowSet.next()){
-            Transfers transfers = mapRowToTransfer(rowSet);
-            list.add(transfers);
-        }
-        return list;
+        return null;
     }
 
     @Override
     public Transfers transferLookupByTransferID(Long transferID) {
-        Transfers transfers = new Transfers();
-        String sql = "SELECT * " +
-                "FROM transfers " +
-                "WHERE transfer_id = ?;";
-        SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sql, transferID);
-        if (rowSet.next()){
-            transfers = mapRowToTransfer(rowSet);
-        }
-        return transfers;
+        return null;
     }
-
-//    @Override
-//    public Object tenmoRequest(Long accountFrom, Long accountTo, BigDecimal amount) {
-//        String sql = "INSERT INTO transfers" +
-//                "()" +
-//                "VALUES (1, 1, ?, ?, ?);";
-//        SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sql, accountFrom, accountTo, amount);
-//    }
 
     @Override
-    public Transfers tenmoPay(Long accountFrom, Long accountTo, BigDecimal amount) {
-        String sql = "INSERT INTO transfers" +
-                "(transfer_type_id, transfer_status_id, ?, ?, ?)" +
-                "VALUES (2, 2, ?, ?, ?);";
-        SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sql, accountFrom, accountTo, amount);
-
+    public Object tenmoRequest(Long accountFrom, Long accountTo, BigDecimal amount) {
+        return null;
     }
 
-
-    private Transfers mapRowToTransfer(SqlRowSet rowSet){
-        Transfers transfers = new Transfers();
-        transfers.setTransferID(rowSet.getLong("transfer_id"));
-        transfers.setTransferTypeID(rowSet.getLong("transfer_type_id"));
-        transfers.setTransferStatusID(rowSet.getLong("transfer_status_id"));
-        transfers.setAccountFrom(rowSet.getLong("account_from"));
-        transfers.setAccountTo(rowSet.getLong("account_to"));
-        transfers.setAmount(rowSet.getBigDecimal("amount"));
-
-        return transfers;
+    @Override
+    public Object tenmoPay(Long accountFrom, Long accountTo, BigDecimal amount) {
+        return null;
     }
->>>>>>> 322f47a54208d3fe3ba9a91ca062cfb350edf6fe
 }
