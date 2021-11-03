@@ -43,9 +43,9 @@ public class JdbcTransferDao implements TransferDao{
 
 
     @Override
-    public Transfers tenmoPay(Long accountFrom, Long accountTo, BigDecimal amount) {
+    public Object tenmoPay(Long accountFrom, Long accountTo, BigDecimal amount) {
         if(accountFrom == accountTo){
-            return "Invalid"
+            return "Invalid transfer, please ";
         }
         String sql = "INSERT INTO transfers" +
                 "(transfer_type_id, transfer_status_id, ?, ?, ?)" +
