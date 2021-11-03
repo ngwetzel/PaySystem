@@ -8,7 +8,6 @@ import java.util.List;
 public interface TransferDao {
      List<Transfers> allTransfers(Long userID);
      Transfers transferLookupByTransferID(Long transferID);
-     Object tenmoRequest (Long accountFrom, Long accountTo, BigDecimal amount);
      Object tenmoPay(Long accountFrom, Long accountTo, BigDecimal amount);
 
 }

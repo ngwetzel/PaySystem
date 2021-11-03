@@ -41,20 +41,17 @@ public class JdbcTransferDao implements TransferDao{
         return transfers;
     }
 
-//    @Override
-//    public Object tenmoRequest(Long accountFrom, Long accountTo, BigDecimal amount) {
-//        String sql = "INSERT INTO transfers" +
-//                "()" +
-//                "VALUES (1, 1, ?, ?, ?);";
-//        SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sql, accountFrom, accountTo, amount);
-//    }
 
     @Override
     public Transfers tenmoPay(Long accountFrom, Long accountTo, BigDecimal amount) {
+        if(accountFrom == accountTo){
+            return "Invalid"
+        }
         String sql = "INSERT INTO transfers" +
                 "(transfer_type_id, transfer_status_id, ?, ?, ?)" +
                 "VALUES (2, 2, ?, ?, ?);";
         SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sql, accountFrom, accountTo, amount);
+
 
     }
 
