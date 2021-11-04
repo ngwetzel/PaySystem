@@ -12,6 +12,7 @@ import java.util.List;
 public class JdbcTransferDao implements TransferDAO{
 
     private JdbcTemplate jdbcTemplate;
+    private AccountsDao accountsDao;
 
     @Override
     public List<Transfers> allTransfers(Long userID) {
@@ -52,24 +53,22 @@ public class JdbcTransferDao implements TransferDAO{
     }
 
 
-
     @Override
-    public Object tenmoPay(Long userFrom, Long userTo, BigDecimal amount) {
-        if (userFrom == userTo) {
-            return "Invalid transfer, please send to a different account ";
+    public Object tenmoPay(Long accountFrom, Long accountTo, BigDecimal amount) {
+        if (accountFrom.equals(accountTo)) {
+            return "Invalid transfer, please try again";
         }
-//        if(amount < balance){
-//            return "Payment denied. Not enough money in account";
-//        } not quite sure how to apply this if statement
-        else {
-            String sql = "INSERT INTO transfers" +
-                    "(transfer_type_id, transfer_status_id, ?, ?, ?)" +
-                    "VALUES (2, 2, ?, ?, ?);";
-            SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sql, userFrom, userTo, amount);
+        if (accountsDao.balanceCheck(accountFrom).compareTo(amount) < 1) {
+            return "Insufficient funds for transfer";
+        }
 
-            return "Success!";
-        }
+        String sql = "INSERT INTO transfers " +
+                "(transfer_type_id, transfer_status_id, ?, ?, ?) " +
+                "VALUES (2, 2, ?, ?, ?);";
+        SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sql, accountFrom, accountTo, amount);
+        return "Your new balance is " + "$" + (accountsDao.balanceCheck(accountFrom).subtract(amount));
     }
+
     public Long destinationAccountLookup (String username){
 
         String sql = "SELECT account_to FROM transfers " +

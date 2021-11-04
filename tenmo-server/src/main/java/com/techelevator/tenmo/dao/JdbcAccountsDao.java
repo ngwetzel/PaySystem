@@ -31,6 +31,7 @@ public class JdbcAccountsDao implements AccountsDao{
         return account.getBalance();
     }
 
+
     @Override
     public BigDecimal withdrawFromBalance(BigDecimal amountToWithdraw, Long userID) {
         Accounts account = new Accounts();
@@ -42,7 +43,17 @@ public class JdbcAccountsDao implements AccountsDao{
 //        return newBalance;
         return account.getBalance();
     }
+    @Override
+    public BigDecimal balanceCheck(Long accountFromId) {
+        String sql = "SELECT balance FROM accounts " +
+                "JOIN users USING(user_id) " +
+                "JOIN transfers on account_from = account_id " +
+                "Where account_id = ?;";
+        BigDecimal balance = jdbcTemplate.queryForObject(sql, BigDecimal.class);
 
+        assert balance != null;
+        return balance;
+    }
 
     private Accounts mapRowToAccount(SqlRowSet rowSet){
         Accounts account = new Accounts();
