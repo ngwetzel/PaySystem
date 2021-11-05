@@ -16,10 +16,4 @@ public interface TransferDAO {
 
 
 
-
-
-
-
-
-
 }
