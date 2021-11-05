@@ -1,18 +1,18 @@
 
 package com.techelevator.tenmo.controller;
 
-        import com.techelevator.tenmo.dao.TransferDAO;
+        import com.techelevator.tenmo.dao.TransferDao;
         import com.techelevator.tenmo.model.Transfers;
         import org.springframework.security.access.prepost.PreAuthorize;
+
         import org.springframework.web.bind.annotation.*;
 
-        import java.math.BigDecimal;
         import java.util.List;
 
 @RestController
 @PreAuthorize("iaAuthenticated()")
 public class TransferController {
-    private TransferDAO transferDao;
+    private TransferDao transferDao;
 
 
 

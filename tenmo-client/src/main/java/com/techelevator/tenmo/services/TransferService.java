@@ -39,6 +39,7 @@ private RestTemplate restTemplate = new RestTemplate();
             users = response.getBody();
 
         } catch (RuntimeException e) {
+            e.printStackTrace();
         }
 
         return users;
@@ -97,9 +98,22 @@ private RestTemplate restTemplate = new RestTemplate();
         return new HttpEntity<>(headers);
     }
 
+        private HttpEntity<Transfers> makeTransferEntity(Transfers transfer) {
+
+            HttpHeaders headers = new HttpHeaders();
+
+            headers.setContentType(MediaType.APPLICATION_JSON);
+
+            headers.setBearerAuth(authToken);
+
+            return new HttpEntity<> (transfer, headers);
+
+        }
+    }
 
 
 
 
 
-}
+
+

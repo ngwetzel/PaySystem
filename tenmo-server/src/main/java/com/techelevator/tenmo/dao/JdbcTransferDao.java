@@ -8,10 +8,11 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-public class JdbcTransferDao implements TransferDAO {
+public class JdbcTransferDao implements TransferDao {
 
     private JdbcTemplate jdbcTemplate;
-    JdcbAccountsDao accountsDao = new JdcbAccountsDao();
+    private AccountsDao accountsDao;
+    private UserDao userDao;
 
     @Override
     public List<Transfers> allTransfers(Long userID) {
@@ -30,8 +31,8 @@ public class JdbcTransferDao implements TransferDAO {
 
     @Override
     public Transfers transferLookupWithTransferID(Long transferID) {
-        Transfers transfers = new Transfers();
-        String sql = "SELECT transfers.* " +
+        Transfers transfers;
+        String sql = "SELECT * " +
                 "FROM transfers WHERE transfer_id = ?;";
         SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sql, transferID);
         transfers = mapRowToTransfer(rowSet);
@@ -60,35 +61,32 @@ public class JdbcTransferDao implements TransferDAO {
         Transfers transfer = new Transfers();
         transfer.setTransferID(rowSet.getLong("transfer_id"));
         transfer.setTransferTypeID(rowSet.getLong("transfer_type_id"));
-        transfer.setAccountFrom(rowSet.getLong("account_from"));
+        transfer.setTransferStatusID(rowSet.getLong("transfer_status_id"));
         transfer.setAccountTo(rowSet.getLong("account_to"));
+        transfer.setAccountFrom(rowSet.getLong("account_from"));
         transfer.setAmount(rowSet.getBigDecimal("balance"));
         return transfer;
     }
 
 
-    @Override
-    public Object tenmoRequest(Long accountFrom, Long accountTo, BigDecimal amount) {
-        return null;
-    }
 
 
     @Override
-    public Object tenmoPay(Long accountFrom, Long accountTo, BigDecimal amount) {
-        if (accountFrom.equals(accountTo)) {
+    public Object tenmoPay(Long userFrom, Long userTo, BigDecimal amount) {
+        if (userFrom.equals(userTo)) {
             return "Invalid transfer, please try again";
         }
-        if (accountsDao.balanceCheck(accountFrom).compareTo(amount) < 1) {
+        if (accountsDao.getBalanceFromAccountID(userFrom).compareTo(amount) < 1) {
             return "Insufficient funds for transfer";
         }
 
         String sql = "INSERT INTO transfers " +
                 "(transfer_type_id, transfer_status_id, ?, ?, ?) " +
                 "VALUES (2, 2, ?, ?, ?);";
-        jdbcTemplate.queryForRowSet(sql, accountFrom, accountTo, amount);
-        accountsDao.depositToBalance(amount, accountTo);
-        accountsDao.withdrawFromBalance(amount, accountFrom);
-        return "Successful Transfer! Your new balance is " + "$" + (accountsDao.balanceCheck(accountFrom).subtract(amount));
+        jdbcTemplate.queryForRowSet(sql,userFrom, userTo, amount);
+        accountsDao.depositToBalance(amount, userTo);
+        accountsDao.withdrawFromBalance(amount, userFrom);
+        return "Successful Transfer! Your new balance is " + "$" + (accountsDao.getBalanceFromAccountID(userFrom).subtract(amount));
         //  return "Successful Transfer! Your new balance is " + "$" + (accountsDao.balanceCheck(accountFrom);
 
     }

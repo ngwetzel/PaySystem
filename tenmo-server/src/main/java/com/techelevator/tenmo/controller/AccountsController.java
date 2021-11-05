@@ -14,12 +14,12 @@ public class AccountsController {
 
     @RequestMapping(path = "balance/{userID}", method = RequestMethod.GET)
     public BigDecimal getBalanceFromUserID(@PathVariable Long userID){
-        return accountsDao.getBalance(userID);
+        return accountsDao.getBalanceFromUserID(userID);
     }
 
     @RequestMapping(path = "balance/{accountID}", method = RequestMethod.GET)
     public BigDecimal allTransfersByTransferID(@PathVariable Long accountID){
-        return accountsDao.balanceCheck(accountID);
+        return accountsDao.getBalanceFromAccountID(accountID);
     }
 
 }
