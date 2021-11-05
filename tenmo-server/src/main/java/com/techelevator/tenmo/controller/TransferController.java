@@ -1,8 +1,6 @@
 package com.techelevator.tenmo.controller;
 
-import com.techelevator.tenmo.dao.AccountsDao;
 import com.techelevator.tenmo.dao.TransferDAO;
-import com.techelevator.tenmo.dao.UserDao;
 import com.techelevator.tenmo.model.Transfers;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -14,8 +12,7 @@ import java.util.List;
 @PreAuthorize("iaAuthenticated()")
 public class TransferController {
     private TransferDAO transferDao;
-    private AccountsDao accountsDao;
-    private UserDao userDao;
+
 
 
     //don't know if I should do user or account id
