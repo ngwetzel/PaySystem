@@ -25,15 +25,18 @@ public class TransferController {
     }
 
     @RequestMapping(path = "transfers/{transferID}", method = RequestMethod.GET)
-    public Transfers transferLookupWithTransferID(@PathVariable Long transferID){
+    public Transfers allTransfersByTransferID(@PathVariable Long transferID){
         return transferDao.transferLookupWithTransferID(transferID);
     }
 
     @RequestMapping(path = "pay" , method = RequestMethod.POST)
-    public Object tenmoPay(@RequestBody Transfers transfer){
-
+    public Object makePayment(@RequestBody Transfers transfer){
         return transferDao.tenmoPay(transfer.getAccountFrom(),transfer.getAccountTo(),transfer.getAmount());
     }
-//    List<String> userList();
+
+    @RequestMapping(path = "users", method = RequestMethod.GET)
+    public List<String> userList(){
+        return transferDao.userList();
+    }
 
 }

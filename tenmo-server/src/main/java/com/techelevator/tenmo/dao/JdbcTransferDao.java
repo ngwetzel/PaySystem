@@ -13,6 +13,7 @@ public class JdbcTransferDao implements TransferDAO{
 
     private JdbcTemplate jdbcTemplate;
     private AccountsDao accountsDao;
+    private UserDao userDao;
 
     @Override
     public List<Transfers> allTransfers(Long userID) {
@@ -31,15 +32,14 @@ public class JdbcTransferDao implements TransferDAO{
 
     @Override
     public Transfers transferLookupWithTransferID(Long transferID) {
-        Transfers transfers = new Transfers();
-        String sql = "SELECT transfers.* " +
+        Transfers transfers;
+        String sql = "SELECT * " +
                 "FROM transfers WHERE transfer_id = ?;";
         SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sql, transferID);
         transfers = mapRowToTransfer(rowSet);
 
         return transfers;
     }
-
 
     @Override
     public List<String> userList() {
@@ -58,27 +58,22 @@ public class JdbcTransferDao implements TransferDAO{
         if (accountFrom.equals(accountTo)) {
             return "Invalid transfer, please try again";
         }
-        if (accountsDao.balanceCheck(accountFrom).compareTo(amount) < 1) {
+        if (accountsDao.getBalanceFromAccountID(accountFrom).compareTo(amount) < 1) {
             return "Insufficient funds for transfer";
         }
 
         String sql = "INSERT INTO transfers " +
                 "(transfer_type_id, transfer_status_id, ?, ?, ?) " +
                 "VALUES (2, 2, ?, ?, ?);";
-        SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sql, accountFrom, accountTo, amount);
-        return "Your new balance is " + "$" + (accountsDao.balanceCheck(accountFrom).subtract(amount));
-    }
-
-    public Long destinationAccountLookup (String username){
-
-        String sql = "SELECT account_to FROM transfers " +
-                "JOIN accounts on account_to = account_id " +
-                "JOIN users USING(user_id) " +
-                "WHERE username = ?;";
-        Long destinationAccountID = jdbcTemplate.queryForObject(sql, Long.class);
-        return destinationAccountID;
+        jdbcTemplate.queryForRowSet(sql, accountFrom, accountTo, amount);
+        accountsDao.depositToBalance(amount, accountTo);
+        accountsDao.withdrawFromBalance(amount, accountFrom);
+        return "Successful Transfer! Your new balance is " + "$" + (accountsDao.getBalanceFromAccountID(accountFrom).subtract(amount));
+      //  return "Successful Transfer! Your new balance is " + "$" + (accountsDao.balanceCheck(accountFrom);
 
     }
+
+
 
     private Transfers mapRowToTransfer (SqlRowSet rowSet){
         Transfers transfer = new Transfers();

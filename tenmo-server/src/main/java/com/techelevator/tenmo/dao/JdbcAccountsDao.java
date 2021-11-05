@@ -13,12 +13,25 @@ public class JdbcAccountsDao implements AccountsDao{
     JdbcTemplate jdbcTemplate;
 
     @Override
-    public BigDecimal getBalance(Long userID) {
+    public BigDecimal getBalanceFromUserID(Long userID) {
         String sql = "SELECT balance FROM accounts WHERE user_id = ?;";
         SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sql, userID);
         BigDecimal balance = rowSet.getBigDecimal("balance");
+
+        assert balance != null;
         return balance;
     }
+
+    @Override
+    public BigDecimal getBalanceFromAccountID(Long accountId) {
+        String sql = "SELECT balance FROM accounts WHERE account_id = ?;";
+        SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sql, accountId);
+        BigDecimal balance = rowSet.getBigDecimal("balance");
+
+        assert balance != null;
+        return balance;
+    }
+
     @Override
     public BigDecimal depositToBalance(BigDecimal amountToDeposit, Long userID) {
         Accounts account = new Accounts();
@@ -43,18 +56,21 @@ public class JdbcAccountsDao implements AccountsDao{
 //        return newBalance;
         return account.getBalance();
     }
-    @Override
-    public BigDecimal balanceCheck(Long accountFromId) {
-        String sql = "SELECT balance FROM accounts " +
+
+
+
+    public Accounts findAccountByUsername (String username){
+        Accounts account = null;
+        String sql = "SELECT account_id FROM accounts " +
                 "JOIN users USING(user_id) " +
-                "JOIN transfers on account_from = account_id " +
-                "Where account_id = ?;";
-        BigDecimal balance = jdbcTemplate.queryForObject(sql, BigDecimal.class);
+                "WHERE username ILIKE ?;";
+      SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sql,  "%" + username + "%");
+      if(rowSet.next()){
+          account = mapRowToAccount(rowSet);
+      }
+      return account;
 
-        assert balance != null;
-        return balance;
     }
-
     private Accounts mapRowToAccount(SqlRowSet rowSet){
         Accounts account = new Accounts();
         account.setAccountID(rowSet.getLong("account_id"));
