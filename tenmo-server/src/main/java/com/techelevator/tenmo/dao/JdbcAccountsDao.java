@@ -3,13 +3,16 @@ package com.techelevator.tenmo.dao;
 import com.techelevator.tenmo.model.Accounts;
 import com.techelevator.tenmo.model.Transfers;
 import jdk.swing.interop.SwingInterOpUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
+import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
-
+import java.security.Principal;
+@Component
 public class JdbcAccountsDao implements AccountsDao{
-
+@Autowired
     JdbcTemplate jdbcTemplate;
 
     @Override
@@ -23,15 +26,17 @@ public class JdbcAccountsDao implements AccountsDao{
     }
 
     @Override
-    public BigDecimal getBalanceFromAccountID(Long accountId) {
-        String sql = "SELECT balance FROM accounts WHERE account_id = ?;";
-        SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sql, accountId);
-        BigDecimal balance = rowSet.getBigDecimal("balance");
+    public BigDecimal getBalanceFromUserName(String username) {
+        String sql = "SELECT balance FROM accounts JOIN users USING(user_id) WHERE username = ?;";
+        SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sql, username);
+        if (rowSet.next()) {
+            BigDecimal balance = rowSet.getBigDecimal("balance");
 
-        assert balance != null;
-        return balance;
+            assert balance != null;
+
+            return balance;
+        } return null;
     }
-
     @Override
     public BigDecimal depositToBalance(BigDecimal amountToDeposit, Long userID) {
         Accounts account = new Accounts();

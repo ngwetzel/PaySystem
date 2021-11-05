@@ -73,22 +73,22 @@ public class JdbcTransferDao implements TransferDao {
 
     @Override
     public Object tenmoPay(Long userFrom, Long userTo, BigDecimal amount) {
-        if (userFrom.equals(userTo)) {
-            return "Invalid transfer, please try again";
-        }
-        if (accountsDao.getBalanceFromAccountID(userFrom).compareTo(amount) < 1) {
-            return "Insufficient funds for transfer";
-        }
-
-        String sql = "INSERT INTO transfers " +
-                "(transfer_type_id, transfer_status_id, ?, ?, ?) " +
-                "VALUES (2, 2, ?, ?, ?);";
-        jdbcTemplate.queryForRowSet(sql,userFrom, userTo, amount);
-        accountsDao.depositToBalance(amount, userTo);
-        accountsDao.withdrawFromBalance(amount, userFrom);
-        return "Successful Transfer! Your new balance is " + "$" + (accountsDao.getBalanceFromAccountID(userFrom).subtract(amount));
-        //  return "Successful Transfer! Your new balance is " + "$" + (accountsDao.balanceCheck(accountFrom);
-
+//        if (userFrom.equals(userTo)) {
+//            return "Invalid transfer, please try again";
+//        }
+//        if (accountsDao.getBalanceFromAccountID(userFrom).compareTo(amount) < 1) {
+//            return "Insufficient funds for transfer";
+//        }
+//
+//        String sql = "INSERT INTO transfers " +
+//                "(transfer_type_id, transfer_status_id, ?, ?, ?) " +
+//                "VALUES (2, 2, ?, ?, ?);";
+//        jdbcTemplate.queryForRowSet(sql,userFrom, userTo, amount);
+//        accountsDao.depositToBalance(amount, userTo);
+//        accountsDao.withdrawFromBalance(amount, userFrom);
+//        return "Successful Transfer! Your new balance is " + "$" + (accountsDao.getBalanceFromAccountID(userFrom).subtract(amount));
+//        //  return "Successful Transfer! Your new balance is " + "$" + (accountsDao.balanceCheck(accountFrom);
+return null;
     }
 
 

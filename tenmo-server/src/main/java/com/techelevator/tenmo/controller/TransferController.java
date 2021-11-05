@@ -1,18 +1,22 @@
 
 package com.techelevator.tenmo.controller;
 
+        import com.techelevator.tenmo.dao.AccountsDao;
         import com.techelevator.tenmo.dao.TransferDao;
         import com.techelevator.tenmo.model.Transfers;
         import org.springframework.security.access.prepost.PreAuthorize;
 
         import org.springframework.web.bind.annotation.*;
 
+        import java.math.BigDecimal;
+        import java.security.Principal;
         import java.util.List;
 
 @RestController
 @PreAuthorize("iaAuthenticated()")
 public class TransferController {
     private TransferDao transferDao;
+    private AccountsDao accountsDao;
 
 
 
@@ -37,5 +41,10 @@ public class TransferController {
         return transferDao.userList();
     }
 
+    @RequestMapping(path = "account/myaccount", method = RequestMethod.GET)
+    public BigDecimal getBalance(Principal principal) {
+
+        return accountsDao.getBalanceFromUserName(principal.getName());
+    }
 }
 
