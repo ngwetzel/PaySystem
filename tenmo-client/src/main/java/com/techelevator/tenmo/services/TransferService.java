@@ -18,11 +18,11 @@ public class TransferService {
 
     private String API_Base = "http://localhost:8080";
 
-    private AuthenticationService authenticationService = new AuthenticationService();
-    private ConsoleService console = new ConsoleService();
+    //private AuthenticationService authenticationService = new AuthenticationService();
+    //private ConsoleService console = new ConsoleService();
     private RestTemplate restTemplate = new RestTemplate();
 
-    private AuthenticatedUser authenticatedUser;
+    //private AuthenticatedUser authenticatedUser;
 
 
     public void setAuthToken(String authToken) {
@@ -89,6 +89,12 @@ public class TransferService {
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setBearerAuth(authToken);
         return new HttpEntity<>(user, headers);
+    }
+    private HttpEntity<Transfers> makeTransferEntity(Transfers transfer) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setBearerAuth(authToken);
+        return new HttpEntity<> (transfer, headers);
     }
 
     private HttpEntity<Void> makeAuthEntity() {
