@@ -1,14 +1,19 @@
 package com.techelevator.tenmo.dao;
 
 import com.techelevator.tenmo.model.Transfers;
+import com.techelevator.tenmo.model.User;
 
 import java.math.BigDecimal;
 import java.util.List;
 
-public interface TransferDao {
+public interface TransferDAO {
      List<Transfers> allTransfers(Long userID);
-     Transfers transferLookupByTransferID(Long transferID);
+     Transfers transferLookupWithTransferID(Long transferID);
      Object tenmoRequest (Long accountFrom, Long accountTo, BigDecimal amount);
      Object tenmoPay(Long accountFrom, Long accountTo, BigDecimal amount);
+     List<String> userList();
+
+
+
 
 }
