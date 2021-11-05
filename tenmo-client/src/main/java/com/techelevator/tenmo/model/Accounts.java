@@ -30,4 +30,5 @@ public class Accounts {
     public void setBalance(BigDecimal balance) {
         this.balance = balance;
     }
+
 }
