@@ -39,7 +39,6 @@ private RestTemplate restTemplate = new RestTemplate();
             users = response.getBody();
 
         } catch (RuntimeException e) {
-
         }
 
         return users;

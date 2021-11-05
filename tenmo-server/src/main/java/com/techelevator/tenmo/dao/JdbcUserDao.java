@@ -79,11 +79,6 @@ public class JdbcUserDao implements UserDao {
         return true;
     }
 
-    @Override
-    public BigDecimal balanceCheck(Long accountFromId) {
-
-        return null;
-    }
 
 
     private User mapRowToUser(SqlRowSet rs) {

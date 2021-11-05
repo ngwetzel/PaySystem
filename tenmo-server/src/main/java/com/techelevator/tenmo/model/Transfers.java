@@ -13,7 +13,7 @@ public class Transfers {
     public Long getTransferID() {
         return transferID;
     }
-    public void setTransferID(long transferid) {
+    public void setTransferID(long transferID) {
         this.transferID = transferID;
     }
 
