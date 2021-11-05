@@ -3,41 +3,41 @@ package com.techelevator.tenmo.model;
 import java.math.BigDecimal;
 
 public class Transfers {
-    private Long transferID;
-    private Long transferTypeID;
-    private Long transferStatusID;
-    private Long accountFrom;
-    private Long accountTo;
-    private BigDecimal amount;
 
-    public Long getTransferID() {
-        return transferID;
-    }
-    public void setTransferID(long transferID) {
-        this.transferID = transferID;
+    public Long transferId;
+    public Long transferTypeId;
+    public Long transferStatusId;
+    public Long accountFrom;
+
+    public Long getTransferId() {
+        return transferId;
     }
 
-    public Long getTransferTypeID() {
-        return transferTypeID;
+    public void setTransferId(Long transferId) {
+        this.transferId = transferId;
     }
 
-    public void setTransferTypeID(long transferTypeID) {
-        this.transferTypeID = transferTypeID;
+    public Long getTransferTypeId() {
+        return transferTypeId;
     }
 
-    public Long getTransferStatusID() {
-        return transferStatusID;
+    public void setTransferTypeId(Long transferTypeId) {
+        this.transferTypeId = transferTypeId;
     }
 
-    public void setTransferStatusID(long transferStatusID){
-        this.transferStatusID = transferStatusID;
+    public Long getTransferStatusId() {
+        return transferStatusId;
+    }
+
+    public void setTransferStatusId(Long transferStatusId) {
+        this.transferStatusId = transferStatusId;
     }
 
     public Long getAccountFrom() {
         return accountFrom;
     }
 
-    public void setAccountFrom(long accountFrom) {
+    public void setAccountFrom(Long accountFrom) {
         this.accountFrom = accountFrom;
     }
 
@@ -45,7 +45,7 @@ public class Transfers {
         return accountTo;
     }
 
-    public void setAccountTo(long accountTo) {
+    public void setAccountTo(Long accountTo) {
         this.accountTo = accountTo;
     }
 
@@ -56,4 +56,7 @@ public class Transfers {
     public void setAmount(BigDecimal amount) {
         this.amount = amount;
     }
+
+    public Long accountTo;
+    public BigDecimal amount;
 }
