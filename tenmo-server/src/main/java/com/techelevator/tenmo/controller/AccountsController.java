@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import java.math.BigDecimal;
 
 @RestController
-@PreAuthorize("iaAuthenticated()")
+@PreAuthorize("isAuthenticated()")
 public class AccountsController {
     private AccountsDao accountsDao;
 
