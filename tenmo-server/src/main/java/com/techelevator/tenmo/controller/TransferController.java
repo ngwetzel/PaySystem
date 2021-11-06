@@ -4,6 +4,7 @@ package com.techelevator.tenmo.controller;
         import com.techelevator.tenmo.dao.AccountsDao;
         import com.techelevator.tenmo.dao.TransferDao;
         import com.techelevator.tenmo.model.Transfers;
+        import org.springframework.beans.factory.annotation.Autowired;
         import org.springframework.security.access.prepost.PreAuthorize;
 
         import org.springframework.web.bind.annotation.*;
@@ -13,17 +14,24 @@ package com.techelevator.tenmo.controller;
         import java.util.List;
 
 @RestController
-@PreAuthorize("iaAuthenticated()")
+@PreAuthorize("isAuthenticated()")
 public class TransferController {
+@Autowired
     private TransferDao transferDao;
-    private AccountsDao accountsDao;
 
 
+
+//public TransferController(TransferDao transferDao, AccountsDao accountsDao) {
+//    this.accountsDao = accountsDao;
+//    this.transferDao = transferDao;
+//}
 
     //don't know if I should do user or account id
-    @RequestMapping(path = "account/{userID}/transfers", method = RequestMethod.GET)
-    public List<Transfers>listAllTransfersForAccount(@PathVariable Long userID){
-        return transferDao.allTransfers(userID);
+    @RequestMapping(path = "transfers", method = RequestMethod.GET)
+    public Transfers[] listAllTransfersForAccount(Principal principal){
+        return transferDao.allTransfers(principal.getName());
+
+
     }
 
     @RequestMapping(path = "transfers/{transferID}", method = RequestMethod.GET)
@@ -31,20 +39,16 @@ public class TransferController {
         return transferDao.transferLookupWithTransferID(transferID);
     }
 
-    @RequestMapping(path = "pay" , method = RequestMethod.POST)
-    public Object makePayment(@RequestBody Transfers transfer){
-        return transferDao.tenmoPay(transfer.getAccountFrom(),transfer.getAccountTo(),transfer.getAmount());
+    @RequestMapping(path = "transfers" , method = RequestMethod.POST)
+    public void makePayment(@RequestBody Transfers transfers){
+        transferDao.tenmoPay(transfers.getUserFrom(), transfers.getUserTo(), transfers.getAmount());
     }
 
     @RequestMapping(path = "users", method = RequestMethod.GET)
-    public List<String> userList(){
+    public String[] userList(){
         return transferDao.userList();
     }
 
-    @RequestMapping(path = "account/myaccount", method = RequestMethod.GET)
-    public BigDecimal getBalance(Principal principal) {
 
-        return accountsDao.getBalanceFromUserName(principal.getName());
-    }
 }
 
