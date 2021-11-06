@@ -3,6 +3,7 @@ package com.techelevator.tenmo.services;
 import com.techelevator.tenmo.model.AuthenticatedUser;
 import com.techelevator.tenmo.model.Transfers;
 import com.techelevator.tenmo.model.User;
+import io.cucumber.java.sl.In;
 import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;
 
@@ -69,12 +70,12 @@ public class TransferService {
             for (Transfers eachTransfer : transfers) {
                 if (eachTransfer.getTransferTypeId() == 2) {
                     System.out.println(eachTransfer.getTransferId() + " " +
-                            eachTransfer.getUserTo()+ "To: " +
+                            "To: " +eachTransfer.getUserTo()+
                             eachTransfer.getAmount());
 
                 } else {
                     System.out.println(eachTransfer.getTransferId() + " " +
-                            eachTransfer.getUserFrom() + "From: " +
+                            "From: " +eachTransfer.getUserFrom() +
                             eachTransfer.getAmount());
                 }
             }
@@ -85,25 +86,32 @@ public class TransferService {
             Scanner scanner = new Scanner(System.in);
             String input = scanner.nextLine();
             for (Transfers eachTransfer : transfers) {
+                if(Integer.parseInt(input) == 0){
+                    System.exit(0);
+                }
 
-                if (Integer.parseInt(input) == eachTransfer.getTransferId()) {
+                else if (Integer.parseInt(input) == eachTransfer.getTransferId()) {
+                    ResponseEntity<Transfers> responseEntity = restTemplate.exchange(API_Base + "/transfers/"
+                                    + eachTransfer.getTransferId(),
+                            HttpMethod.GET, makeAuthEntity(), Transfers.class);
+                    Transfers specificTransfer = responseEntity.getBody();
                     System.out.println
                             ("-------------------------------------\n" +
                              "Transfers Details\n" +
                              "-------------------------------------\n" +
-                             "ID: " +
-                             "From: " +
-                             "To: " +
-                             "Type: " +
-                             "Status: " +
-                             "Amount: $"
+                             "ID: " + specificTransfer.getTransferId() +
+                             "From: " + specificTransfer.getUserFrom() +
+                             "To: " + specificTransfer.getUserTo() +
+                             "Type: " + specificTransfer.getTransferTypeId() +
+                             "Status: " + specificTransfer.getTransferStatusId() +
+                             "Amount: $" + specificTransfer.getAmount()
                             );
                 }
                 else{
                     System.out.println("Transfer ID not found please re-enter");
                 }
             }
-        } catch (Exception e) {
+        } catch (NullPointerException e) {
             e.printStackTrace();
         }
         return transfers;

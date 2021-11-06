@@ -9,9 +9,9 @@ public interface AccountsDao {
 
     BigDecimal getBalanceFromUserID(Long userID);
 
-    BigDecimal depositToBalance(BigDecimal amountToDeposit, Long accountID);
+    BigDecimal depositToBalance(BigDecimal amountToDeposit, Long userID);
 
-    BigDecimal withdrawFromBalance(BigDecimal amountToWithdraw, Long accountID);
+    BigDecimal withdrawFromBalance(BigDecimal amountToWithdraw, Long userID);
 
     BigDecimal getBalanceFromUserName(String username);
 

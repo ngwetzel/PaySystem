@@ -87,8 +87,8 @@ public class JdbcTransferDao implements TransferDao {
         jdbcTemplate.queryForRowSet(sql, userFromID, userToID, amount);
         accountsDao.depositToBalance(amount, userToID);
         accountsDao.withdrawFromBalance(amount, userFromID);
-        return "Successful Transfer! Your new balance is " + "$" + (accountsDao.getBalanceFromUserName(userTo).subtract(amount));
-        //  return "Successful Transfer! Your new balance is " + "$" + (accountsDao.balanceCheck(accountFrom);
+        //return "Successful Transfer! Your new balance is " + "$" + (accountsDao.getBalanceFromUserName().subtract(amount));
+          return "Successful Transfer! Your new balance is " + "$" + (accountsDao.getBalanceFromUserID(userFromID));
 
     }
 

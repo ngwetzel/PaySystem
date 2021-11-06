@@ -13,7 +13,7 @@ public interface TransferDao {
 
     Transfers transferLookupWithTransferID(Long transferID);
 
-    Object tenmoPay(String userFrom, String UserTo, BigDecimal amount);
+    Object tenmoPay(Long userFromID, Long userToID, BigDecimal amount);
 
     List<String> userList();
 

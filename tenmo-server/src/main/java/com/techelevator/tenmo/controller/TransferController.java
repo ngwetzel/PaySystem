@@ -13,7 +13,7 @@ package com.techelevator.tenmo.controller;
         import java.util.List;
 
 @RestController
-@PreAuthorize("iaAuthenticated()")
+@PreAuthorize("isAuthenticated()")
 public class TransferController {
     private TransferDao transferDao;
 
@@ -30,7 +30,7 @@ public class TransferController {
 
     @RequestMapping(path = "pay" , method = RequestMethod.POST)
     public Object makePayment(@RequestBody Transfers transfer){
-        return transferDao.tenmoPay(transfer.getUserFrom(),transfer.getUserTo(),transfer.getAmount());
+        return transferDao.tenmoPay(transfer.getAccountFrom(),transfer.getAccountTo(),transfer.getAmount());
     }
 
     @RequestMapping(path = "users", method = RequestMethod.GET)
