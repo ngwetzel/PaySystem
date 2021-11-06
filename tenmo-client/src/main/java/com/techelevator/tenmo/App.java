@@ -1,6 +1,7 @@
 package com.techelevator.tenmo;
 
 import com.techelevator.tenmo.model.AuthenticatedUser;
+import com.techelevator.tenmo.model.Transfers;
 import com.techelevator.tenmo.model.UserCredentials;
 import com.techelevator.tenmo.services.AuthenticationService;
 import com.techelevator.tenmo.services.AuthenticationServiceException;
@@ -9,6 +10,7 @@ import com.techelevator.view.ConsoleService;
 
 import java.math.BigDecimal;
 import java.security.Principal;
+import java.util.List;
 
 public class App {
 
@@ -79,24 +81,39 @@ TransferService transferService = new TransferService(currentUser);
 			BigDecimal balance = transferService.viewBalance();
 			System.out.println("Current balance is: $" + balance);
 		} catch (NullPointerException e) {
-
+e.getStackTrace();
 		}
 
 	}
 
 	private void viewTransferHistory() {
 		// TODO Auto-generated method stub
-		
+		TransferService transferService = new TransferService(currentUser);
+		try {
+			Transfers[] transfersList = transferService.listTransfers();
+			if(transfersList == null || transfersList.length == 0) {
+				System.out.println("No Transfers available");
+			}
+//			for (Transfers transfers : transfersList)
+//				System.out.println(transfers);
+		} catch (NullPointerException e) {
+		e.getStackTrace();
+		}
 	}
 
 	private void viewPendingRequests() {
 		// TODO Auto-generated method stub
-		
+		TransferService transferService = new TransferService(currentUser);
+//		try {
+//
+//		}
 	}
 
 	private void sendBucks() {
 		// TODO Auto-generated method stub
-		
+	TransferService transferService = new TransferService(currentUser);
+
+	transferService.send();
 	}
 
 	private void requestBucks() {
