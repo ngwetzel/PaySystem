@@ -30,6 +30,6 @@ public Long accountId;
     }
 
     public Long userId;
-p   public BigDecimal balance;
+    public BigDecimal balance;
 
 }

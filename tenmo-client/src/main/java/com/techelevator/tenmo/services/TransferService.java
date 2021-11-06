@@ -1,34 +1,25 @@
 package com.techelevator.tenmo.services;
 
-import com.techelevator.tenmo.model.Accounts;
 import com.techelevator.tenmo.model.AuthenticatedUser;
 import com.techelevator.tenmo.model.Transfers;
 import com.techelevator.tenmo.model.User;
-import com.techelevator.view.ConsoleService;
 import org.springframework.http.*;
-import org.springframework.web.client.ResourceAccessException;
-import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
+
+import java.util.Scanner;
 
 public class TransferService {
     private String authToken;
 
+    private final String  API_Base = "http://localhost:8080";
+    private final RestTemplate restTemplate = new RestTemplate();
+    private AuthenticatedUser authenticatedUser;
 
-private String API_Base = "http://localhost:8080";
-
-
-private AuthenticatedUser authenticatedUser;
-private RestTemplate restTemplate = new RestTemplate();
-
-
-public  TransferService(AuthenticatedUser authenticatedUser) {
-    this.authenticatedUser = authenticatedUser;
-    authToken = authenticatedUser.getToken();
-}
+    public TransferService(AuthenticatedUser authenticatedUser) {
+        authToken = authenticatedUser.getToken();
+    }
 
 
     public void setAuthToken(String authToken) {
@@ -50,21 +41,10 @@ public  TransferService(AuthenticatedUser authenticatedUser) {
     }
 
     public BigDecimal viewBalance() {
-<<<<<<< HEAD
-        Accounts accounts = null;
-        BigDecimal balance = null; // => so we can return the balance at the end
-        try {
-            ResponseEntity<BigDecimal> response = restTemplate.exchange(API_Base + "/accounts/" +
-                            authenticatedUser.getUser().getId(),
-                    HttpMethod.GET, makeAuthEntity(), BigDecimal.class);
-=======
-        String username = authenticatedUser.getUser().getUsername();
-        Accounts accounts = null;
-        BigDecimal balance = null; // => so we can return the balance at the end
+        BigDecimal balance = null;
         try {
             ResponseEntity<BigDecimal> response = restTemplate.exchange(API_Base + "balance",
-                    HttpMethod.GET, makeAuthEntity(), BigDecimal.class); //responseEntity should be Bigdecimal and so should the .class
->>>>>>> acfb2f6feeb7e19e53c03950f9c06225b71b81e2
+                    HttpMethod.GET, makeAuthEntity(), BigDecimal.class);
             balance = response.getBody();
             return balance;
         } catch (RuntimeException e) {
@@ -73,57 +53,88 @@ public  TransferService(AuthenticatedUser authenticatedUser) {
         return null;
     }
 
-    public Transfers[] listTransfers(Long userID){
+    public Transfers[] listTransfers() {
         Transfers[] transfers = null;
         try {
-            ResponseEntity<Transfers[]> response =
-                    restTemplate.exchange(API_Base + "user/" + userID + "/transfers",
-                            HttpMethod.GET, makeAuthEntity(), Transfers[].class);
+            ResponseEntity<Transfers[]> response = restTemplate.exchange(API_Base + "/transfers",
+                    HttpMethod.GET, makeAuthEntity(), Transfers[].class);
             transfers = response.getBody();
-        } catch (Exception e){
+            System.out.println
+                    ("------------------------------------\n" +
+                     " Transfers \n" +
+                     " ID          From/To          Amount\n" +
+                     "------------------------------------\n");
+
+
+            for (Transfers eachTransfer : transfers) {
+                if (eachTransfer.getTransferTypeId() == 2) {
+                    System.out.println(eachTransfer.getTransferId() + " " +
+                            eachTransfer.getUserTo()+ "To: " +
+                            eachTransfer.getAmount());
+
+                } else {
+                    System.out.println(eachTransfer.getTransferId() + " " +
+                            eachTransfer.getUserFrom() + "From: " +
+                            eachTransfer.getAmount());
+                }
+            }
+
+            System.out.println("------------------------------------\n" +
+                    "Please enter transferID to view details (0 to cancel)");
+
+            Scanner scanner = new Scanner(System.in);
+            String input = scanner.nextLine();
+            for (Transfers eachTransfer : transfers) {
+
+                if (Integer.parseInt(input) == eachTransfer.getTransferId()) {
+                    System.out.println
+                            ("-------------------------------------\n" +
+                             "Transfers Details\n" +
+                             "-------------------------------------\n" +
+                             "ID: " +
+                             "From: " +
+                             "To: " +
+                             "Type: " +
+                             "Status: " +
+                             "Amount: $"
+                            );
+                }
+                else{
+                    System.out.println("Transfer ID not found please re-enter");
+                }
+            }
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return transfers;
     }
 
-    public Transfers getTransfer(Long transferID){
-        Transfers transfer = null;
-        try {
-            ResponseEntity<Transfers> response =
-                    restTemplate.exchange(API_Base + "transfers/" + transferID,
-                            HttpMethod.GET, makeAuthEntity(), Transfers.class);
-            transfer = response.getBody();
-        } catch (Exception e){
-            e.printStackTrace();
-        }
-        return transfer;
-    }
 
-    private HttpEntity<User> makeUserEntity(User user) {
+    private HttpEntity<User> makeUserEntity (User user){
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setBearerAuth(authToken);
         return new HttpEntity<>(user, headers);
     }
 
-    private HttpEntity<Void> makeAuthEntity() {
+    private HttpEntity<Void> makeAuthEntity () {
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(authToken);
         return new HttpEntity<>(headers);
     }
 
-        private HttpEntity<Transfers> makeTransferEntity(Transfers transfer) {
+    private HttpEntity<Transfers> makeTransferEntity (Transfers transfer){
 
-            HttpHeaders headers = new HttpHeaders();
+        HttpHeaders headers = new HttpHeaders();
 
-            headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setContentType(MediaType.APPLICATION_JSON);
 
-            headers.setBearerAuth(authToken);
+        headers.setBearerAuth(authToken);
 
-            return new HttpEntity<> (transfer, headers);
+        return new HttpEntity<>(transfer, headers);
 
-        }
     }
+}
 
 
 

@@ -4,10 +4,28 @@ import java.math.BigDecimal;
 
 public class Transfers {
 
-    public Long transferId;
-    public Long transferTypeId;
-    public Long transferStatusId;
-    public Long accountFrom;
+    private Long transferId;
+    private Long transferTypeId;
+    private Long transferStatusId;
+    private Long accountFrom;
+    private Long accountTo;
+    private BigDecimal amount;
+    private String userTo;
+    private String userFrom;
+    public String getUserTo() {
+        return userTo;
+    }
+
+    public void setUserTo(String userTo) {
+        this.userTo = userTo;
+    }
+    public String getUserFrom() {
+        return userFrom;
+    }
+
+    public void setUserFrom(String userFrom) {
+        this.userFrom = userFrom;
+    }
 
     public Long getTransferId() {
         return transferId;
@@ -57,6 +75,5 @@ public class Transfers {
         this.amount = amount;
     }
 
-    public Long accountTo;
-    public BigDecimal amount;
+
 }

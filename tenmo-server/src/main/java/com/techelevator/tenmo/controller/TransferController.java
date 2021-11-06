@@ -16,14 +16,11 @@ package com.techelevator.tenmo.controller;
 @PreAuthorize("iaAuthenticated()")
 public class TransferController {
     private TransferDao transferDao;
-    private AccountsDao accountsDao;
-
-
 
     //don't know if I should do user or account id
-    @RequestMapping(path = "account/{userID}/transfers", method = RequestMethod.GET)
-    public List<Transfers>listAllTransfersForAccount(@PathVariable Long userID){
-        return transferDao.allTransfers(userID);
+    @RequestMapping(path = "transfers", method = RequestMethod.GET)
+    public Transfers[] listAllTransfersForAccount(Principal principal){
+        return transferDao.allTransfers(principal.getName());
     }
 
     @RequestMapping(path = "transfers/{transferID}", method = RequestMethod.GET)
@@ -33,7 +30,7 @@ public class TransferController {
 
     @RequestMapping(path = "pay" , method = RequestMethod.POST)
     public Object makePayment(@RequestBody Transfers transfer){
-        return transferDao.tenmoPay(transfer.getAccountFrom(),transfer.getAccountTo(),transfer.getAmount());
+        return transferDao.tenmoPay(transfer.getUserFrom(),transfer.getUserTo(),transfer.getAmount());
     }
 
     @RequestMapping(path = "users", method = RequestMethod.GET)
@@ -41,10 +38,6 @@ public class TransferController {
         return transferDao.userList();
     }
 
-    @RequestMapping(path = "account/myaccount", method = RequestMethod.GET)
-    public BigDecimal getBalance(Principal principal) {
 
-        return accountsDao.getBalanceFromUserName(principal.getName());
-    }
 }
 

@@ -20,6 +20,7 @@ public class AccountsController {
         return accountsDao.getBalanceFromUserName(principal.getName());
     }
 
+
 //    @RequestMapping(path = "balance/{accountID}", method = RequestMethod.GET)
 //    public BigDecimal allTransfersByTransferID(@PathVariable Long accountID){
 //        return accountsDao.getBalanceFromAccountID(accountID);
