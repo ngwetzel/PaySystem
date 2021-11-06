@@ -10,6 +10,7 @@ import com.techelevator.view.ConsoleService;
 
 import java.math.BigDecimal;
 import java.security.Principal;
+import java.util.List;
 
 public class App {
 
@@ -81,6 +82,7 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 			System.out.println("Current balance is: $" + balance);
 		} catch (NullPointerException e) {
 			e.printStackTrace();
+			e.getStackTrace();
 		}
 
 	}
@@ -88,26 +90,31 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 	private void viewTransferHistory() {
 		// TODO Auto-generated method stub
 		TransferService transferService = new TransferService(currentUser);
-		transferService.listTransfers();
-//		try {
-//			Transfers[] transfers = transferService.listTransfers();
-//			System.out.println(transfers);
-//		} catch (NullPointerException e) {
-//			e.printStackTrace();
-//		}
-
+		try {
+			Transfers[] transfersList = transferService.listTransfers();
+			if(transfersList == null || transfersList.length == 0) {
+				System.out.println("No Transfers available");
+			}
+//			for (Transfers transfers : transfersList)
+//				System.out.println(transfers);
+		} catch (NullPointerException e) {
+		e.getStackTrace();
+		}
 	}
 
 	private void viewPendingRequests() {
 		// TODO Auto-generated method stub
 		TransferService transferService = new TransferService(currentUser);
-//		transferService.listTransfers();
+//		try {
+//
+//		}
 	}
 
 	private void sendBucks() {
 		// TODO Auto-generated method stub
-		TransferService transferService = new TransferService(currentUser);
-//		transferService.listTransfers();
+	TransferService transferService = new TransferService(currentUser);
+
+	transferService.send();
 	}
 
 	private void requestBucks() {

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Component
@@ -17,6 +18,7 @@ public class JdbcTransferDao implements TransferDao {
     @Autowired
     private AccountsDao accountsDao;
     private UserDao userDao;
+
 
     @Override
     public Transfers[] allTransfers(String username) {
@@ -56,15 +58,20 @@ public class JdbcTransferDao implements TransferDao {
 
 
 
+
     @Override
-    public List<String> userList() {
+    public String[] userList() {
         List<String> usernames = new ArrayList<>();
         String sql = "SELECT username FROM users;";
         SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sql);
         while (rowSet.next()) {
             usernames.add(rowSet.getString("username"));
         }
-        return usernames;
+        String[] names = new String[usernames.size()];
+        for (int i = 0; i < usernames.size(); i++) {
+            names[i] = usernames.get(i);
+        }
+        return names;
     }
 
     @Override
@@ -110,7 +117,31 @@ public class JdbcTransferDao implements TransferDao {
 
 
 
+    @Override
+    public void tenmoPay(String username, String userTo, BigDecimal amount) {
+        if (username.equals(userTo)) {
+            System.out.println("Invalid transfer, please try again");
+        }
+        if (accountsDao.getBalanceFromUserName(username).compareTo(amount) < 1) {
+            System.out.println("Insufficient funds for transfer");
+        }
+        String sqlUser = "SELECT account_id FROM users WHERE username = ?;";
+        Long userIdFrom  = jdbcTemplate.queryForObject(sqlUser, Long.class, username);
+        String sqlTO = "SELECT account_id FROM users WHERE username = ?;";
+        Long userIdTo = jdbcTemplate.queryForObject(sqlTO, Long.class, userTo);
 
+
+        String sql = "INSERT INTO transfers " +
+                "(transfer_type_id, transfer_status_id, ?, ?, ?) " +
+                "VALUES (2, 2, ?, ?, ?);";
+        jdbcTemplate.update(sql, userIdFrom, userIdTo, amount);
+
+        accountsDao.depositToBalance(amount, userTo);
+        accountsDao.withdrawFromBalance(amount, username);
+        System.out.println("Successful Transfer! Your new balance is " + "$" + (accountsDao.getBalanceFromUserName(userTo).subtract(amount)));
+        //  return "Successful Transfer! Your new balance is " + "$" + (accountsDao.balanceCheck(accountFrom);
+
+    }
 
 
 

@@ -9,13 +9,16 @@ import java.util.List;
 
 public interface TransferDao {
 
-    Transfers[] allTransfers(String username);
+
+
+   Transfers[] allTransfers(String username);
 
     Transfers transferLookupWithTransferID(Long transferID);
 
-    Object tenmoPay(Long userFromID, Long userToID, BigDecimal amount);
+    void tenmoPay(String username, String userTo, BigDecimal amount);
 
-    List<String> userList();
+    String[] userList();//shouldn't it be List<User>
+
 
 }
 

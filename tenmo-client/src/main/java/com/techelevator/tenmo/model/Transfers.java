@@ -12,6 +12,7 @@ public class Transfers {
     private BigDecimal amount;
     private String userTo;
     private String userFrom;
+
     public String getUserTo() {
         return userTo;
     }
@@ -19,6 +20,7 @@ public class Transfers {
     public void setUserTo(String userTo) {
         this.userTo = userTo;
     }
+
     public String getUserFrom() {
         return userFrom;
     }
@@ -30,7 +32,6 @@ public class Transfers {
     public Long getTransferId() {
         return transferId;
     }
-
     public void setTransferId(Long transferId) {
         this.transferId = transferId;
     }
