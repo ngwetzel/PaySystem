@@ -12,6 +12,8 @@ public class Transfers {
     private BigDecimal amount;
     private String userTo;
     private String userFrom;
+    private String transferType;
+    private String transferStatus;
 
     public String getUserTo() {
         return userTo;
@@ -76,5 +78,19 @@ public class Transfers {
         this.amount = amount;
     }
 
+    public String getTransferType() {
+        return transferType;
+    }
 
+    public void setTransferType(String transferType) {
+        this.transferType = transferType;
+    }
+
+    public String getTransferStatus() {
+        return transferStatus;
+    }
+
+    public void setTransferStatus(String transferStatus) {
+        this.transferStatus = transferStatus;
+    }
 }

@@ -36,28 +36,28 @@ public class JdbcAccountsDao implements AccountsDao{
         } return null;
     }
     @Override
-    public BigDecimal depositToBalance(BigDecimal amountToDeposit, String username) {
+    public BigDecimal depositToBalance(BigDecimal amountToDeposit, Long userTo) {
         Accounts account = new Accounts();
         BigDecimal newBalance = account.getBalance().add(amountToDeposit);
         String sql = "UPDATE accounts " +
                 "Join users USING(user_id) " +
                 "SET balance = ? " +
-                "WHERE username = ?;";
-        jdbcTemplate.queryForRowSet(sql, newBalance, username);
+                "WHERE user_id = ?;";
+        jdbcTemplate.queryForRowSet(sql, newBalance, userTo);
 //        return newBalance;
         return account.getBalance();
     }
 
 
     @Override
-    public BigDecimal withdrawFromBalance(BigDecimal amountToWithdraw, String username) {
+    public BigDecimal withdrawFromBalance(BigDecimal amountToWithdraw, Long userFrom) {
         Accounts account = new Accounts();
         BigDecimal newBalance = account.getBalance().subtract(amountToWithdraw);
         String sql = "UPDATE accounts " +
                 "Join users USING(user_id) " +
                 "SET balance = ? " +
-                "WHERE username = ?;";
-        jdbcTemplate.queryForRowSet(sql, newBalance, username);
+                "WHERE user_id = ?;";
+        jdbcTemplate.queryForRowSet(sql, newBalance, userFrom);
 //        return newBalance;
         return account.getBalance();
     }

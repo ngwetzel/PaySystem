@@ -11,7 +11,8 @@ public class Transfers {
     private BigDecimal amount;
     private String userFrom;
     private String userTo;
-
+    private String transferType;
+    private String transferStatus;
 
     public Long getTransferID() {
         return transferID;
@@ -73,5 +74,21 @@ public class Transfers {
 
     public void setUserFrom(String userFrom) {
         this.userFrom = userFrom;
+    }
+
+    public String getTransferType() {
+        return transferType;
+    }
+
+    public void setTransferType(String transferType) {
+        this.transferType = transferType;
+    }
+
+    public String getTransferStatus() {
+        return transferStatus;
+    }
+
+    public void setTransferStatus(String transferStatus) {
+        this.transferStatus = transferStatus;
     }
 }
