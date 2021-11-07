@@ -30,10 +30,12 @@ public class JdbcAccountsDao implements AccountsDao{
     public BigDecimal getBalanceFromAccountId(Long accountId) {
         String sql = "SELECT balance FROM accounts WHERE account_id = ?;";
         SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sql, accountId);
-        BigDecimal balance = rowSet.getBigDecimal("balance");
-
-        assert balance != null;
-        return balance;
+        if (rowSet.next()) {
+            BigDecimal balance = rowSet.getBigDecimal("balance");
+            assert balance != null;
+            return balance;
+        }
+     return null;
     }
 
     @Override
@@ -50,27 +52,25 @@ public class JdbcAccountsDao implements AccountsDao{
     }
     @Override
     public BigDecimal depositToBalance(BigDecimal amountToDeposit, Long accountId) {
-        Accounts account = new Accounts();
-        BigDecimal newBalance = account.getBalance().add(amountToDeposit);
+//
         String sql = "UPDATE accounts " +
-                "SET balance = ? " +
+                "SET balance = balance + ? " +
                 "WHERE account_id = ?;";
-        jdbcTemplate.queryForRowSet(sql, newBalance, accountId);
+        jdbcTemplate.update(sql, amountToDeposit, accountId);
 //        return newBalance;
-        return account.getBalance();
+        return getBalanceFromAccountId(accountId);
     }
 
 
     @Override
     public BigDecimal withdrawFromBalance(BigDecimal amountToWithdraw, Long accountId) {
-        Accounts account = new Accounts();
-        BigDecimal newBalance = account.getBalance().subtract(amountToWithdraw);
+//
         String sql = "UPDATE accounts " +
-                "SET balance = ? " +
+                "SET balance = balance - ? " +
                 "WHERE account_id = ?;";
-        jdbcTemplate.queryForRowSet(sql, newBalance, accountId);
+        jdbcTemplate.update(sql, amountToWithdraw, accountId);
 //        return newBalance;
-        return account.getBalance();
+        return getBalanceFromAccountId(accountId);
     }
 
 

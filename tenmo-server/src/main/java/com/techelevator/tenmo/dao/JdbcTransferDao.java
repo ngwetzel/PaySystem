@@ -14,9 +14,10 @@ import java.util.List;
 public class JdbcTransferDao implements TransferDao {
 @Autowired
     private JdbcTemplate jdbcTemplate;
-
+@Autowired
     private AccountsDao accountsDao;
 //    private UserDao userDao;
+
 
 
     @Override
@@ -74,12 +75,12 @@ public class JdbcTransferDao implements TransferDao {
 
     private Transfers mapRowToTransfer(SqlRowSet rowSet) {
         Transfers transfer = new Transfers();
-        transfer.setTransferID(rowSet.getLong("transfer_id"));
-        transfer.setTransferTypeID(rowSet.getLong("transfer_type_id"));
-        transfer.setTransferStatusID(rowSet.getLong("transfer_status_id"));
+        transfer.setTransferId(rowSet.getLong("transfer_id"));
+        transfer.setTransferTypeId(rowSet.getLong("transfer_type_id"));
+        transfer.setTransferStatusId(rowSet.getLong("transfer_status_id"));
         transfer.setAccountTo(rowSet.getLong("account_to"));
         transfer.setAccountFrom(rowSet.getLong("account_from"));
-        transfer.setAmount(rowSet.getBigDecimal("balance"));
+        transfer.setAmount(rowSet.getBigDecimal("amount"));
 
         return transfer;
     }
@@ -102,7 +103,7 @@ public class JdbcTransferDao implements TransferDao {
 
 
         String sql = "INSERT INTO transfers " +
-                "(transfer_type_id, transfer_status_id, ?, ?, ?) " +
+                "(transfer_type_id, transfer_status_id, account_from, account_to, amount) " +
                 "VALUES (2, 2, ?, ?, ?);";
         jdbcTemplate.update(sql, accountFromId, accountToId, amount);
 

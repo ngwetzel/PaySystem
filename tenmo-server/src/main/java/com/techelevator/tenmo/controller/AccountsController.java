@@ -24,7 +24,7 @@ private UserDao userDao;
     }
 
     @RequestMapping(path = "accounts", method = RequestMethod.GET)
-    public Long getID(String user) {
+    public Long getID(@RequestParam String user) {
         return userDao.getId(user);
     }
 

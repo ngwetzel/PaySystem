@@ -71,7 +71,7 @@ public  TransferService(AuthenticatedUser authenticatedUser) {
         Long accountID = null; // => so we can return the balance at the end
         try {
 
-            ResponseEntity<Long> response = restTemplate.exchange(API_Base + "accounts",
+            ResponseEntity<Long> response = restTemplate.exchange(API_Base + "accounts?user=" + user,
                     HttpMethod.GET, makeAuthEntity(), Long.class);
             accountID = response.getBody();
             return accountID;
