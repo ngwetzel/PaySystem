@@ -9,8 +9,7 @@ public class Transfers {
     private Long accountFrom;
     private Long accountTo;
     private BigDecimal amount;
-    private String userFrom;
-    private String userTo;
+
 
     public void setTransferID(Long transferID) {
         this.transferID = transferID;
@@ -32,21 +31,7 @@ public class Transfers {
         this.accountTo = accountTo;
     }
 
-    public String getUserFrom() {
-        return userFrom;
-    }
 
-    public void setUserFrom(String userFrom) {
-        this.userFrom = userFrom;
-    }
-
-    public String getUserTo() {
-        return userTo;
-    }
-
-    public void setUserTo(String userTo) {
-        this.userTo = userTo;
-    }
 
     public Long getTransferID() {
         return transferID;

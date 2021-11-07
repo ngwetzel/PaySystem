@@ -1,13 +1,14 @@
 package com.techelevator.tenmo.dao;
 
 import com.techelevator.tenmo.model.User;
+import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.util.List;
 
 public interface UserDao {
 
-    List<User> findAll();
+//    List<User> findAll();
 
     User findByUsername(String username);
 
@@ -15,6 +16,7 @@ public interface UserDao {
 
     boolean create(String username, String password);
 
+    Long getId(String user);
 
 
 }

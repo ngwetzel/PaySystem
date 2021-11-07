@@ -14,8 +14,9 @@ import java.util.List;
 public class JdbcTransferDao implements TransferDao {
 @Autowired
     private JdbcTemplate jdbcTemplate;
+
     private AccountsDao accountsDao;
-    private UserDao userDao;
+//    private UserDao userDao;
 
 
     @Override
@@ -25,7 +26,7 @@ public class JdbcTransferDao implements TransferDao {
                 "FROM transfers " +
                 "Join accounts on transfers.account_from = accounts.account_id " +
                 "Join users USING(user_id) " +
-                "WHERE users.username = ?;";
+                "WHERE users.username ILIKE ?;";
         SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sql, username);
         while (rowSet.next()) {
             Transfers transfers = mapRowToTransfer(rowSet);
@@ -71,7 +72,6 @@ public class JdbcTransferDao implements TransferDao {
 
 
 
-
     private Transfers mapRowToTransfer(SqlRowSet rowSet) {
         Transfers transfer = new Transfers();
         transfer.setTransferID(rowSet.getLong("transfer_id"));
@@ -88,27 +88,27 @@ public class JdbcTransferDao implements TransferDao {
 
 
     @Override
-    public void tenmoPay(String username, String userTo, BigDecimal amount) {
-        if (username.equals(userTo)) {
-            System.out.println("Invalid transfer, please try again");
-        }
-        if (accountsDao.getBalanceFromUserName(username).compareTo(amount) < 1) {
-            System.out.println("Insufficient funds for transfer");
-        }
-        String sqlUser = "SELECT account_id FROM users WHERE username = ?;";
-        Long userIdFrom  = jdbcTemplate.queryForObject(sqlUser, Long.class, username);
-        String sqlTO = "SELECT account_id FROM users WHERE username = ?;";
-        Long userIdTo = jdbcTemplate.queryForObject(sqlTO, Long.class, userTo);
+    public void tenmoPay(Long accountFromId, Long accountToId, BigDecimal amount) {
+//        if (accountFromId.equals(accountToId)) {
+//            System.out.println("Invalid transfer, please try again");
+//        }
+//        if (accountsDao.getBalanceFromAccountId(accountFromId).compareTo(amount) < 1) {
+//            System.out.println("Insufficient funds for transfer");
+//        }
+//        String sqlUser = "SELECT account_id FROM users WHERE username ILIKE ?;";
+//        Long userIdFrom  = jdbcTemplate.queryForObject(sqlUser, Long.class, username);
+//        String sqlTO = "SELECT account_id FROM users WHERE username ILIKE ?;";
+//        Long userIdTo = jdbcTemplate.queryForObject(sqlTO, Long.class, userTo);
 
 
         String sql = "INSERT INTO transfers " +
                 "(transfer_type_id, transfer_status_id, ?, ?, ?) " +
                 "VALUES (2, 2, ?, ?, ?);";
-        jdbcTemplate.update(sql, userIdFrom, userIdTo, amount);
+        jdbcTemplate.update(sql, accountFromId, accountToId, amount);
 
-        accountsDao.depositToBalance(amount, userTo);
-        accountsDao.withdrawFromBalance(amount, username);
-        System.out.println("Successful Transfer! Your new balance is " + "$" + (accountsDao.getBalanceFromUserName(userTo).subtract(amount)));
+        accountsDao.depositToBalance(amount, accountToId);
+        accountsDao.withdrawFromBalance(amount, accountFromId);
+        System.out.println("Successful Transfer! Your new balance is " + "$" + (accountsDao.getBalanceFromAccountId(accountFromId).subtract(amount)));
         //  return "Successful Transfer! Your new balance is " + "$" + (accountsDao.balanceCheck(accountFrom);
 
     }

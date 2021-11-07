@@ -65,6 +65,23 @@ public  TransferService(AuthenticatedUser authenticatedUser) {
         return null;
     }
 
+    public Long getID(String user) {
+//        String username = authenticatedUser.getUser().getUsername();
+
+        Long accountID = null; // => so we can return the balance at the end
+        try {
+
+            ResponseEntity<Long> response = restTemplate.exchange(API_Base + "accounts",
+                    HttpMethod.GET, makeAuthEntity(), Long.class);
+            accountID = response.getBody();
+            return accountID;
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+
     public void send() {
     String username = authenticatedUser.getUser().getUsername();
     Transfers tenmoTransfer = null;
@@ -76,13 +93,20 @@ public  TransferService(AuthenticatedUser authenticatedUser) {
         }
       String userTo = scanner.nextLine();
 
+
+
         System.out.println("How much would you like to send?  ");
         BigDecimal amount = scanner.nextBigDecimal();
-        Transfers forEntity = new Transfers();
-        forEntity.setUserFrom(authenticatedUser.getUser().getUsername());
-        forEntity.setUserTo(userTo);
-        forEntity.setAmount(amount);
+        Long accountFrom = getID(authenticatedUser.getUser().getUsername());
+        Long accountTo = getID(userTo);
 
+        Transfers forEntity = new Transfers();
+        forEntity.setTransferTypeId(2L);
+        forEntity.setTransferStatusId(2L);
+       forEntity.setAccountFrom(accountFrom);
+       forEntity.setAccountTo(accountTo);
+        forEntity.setAmount(amount);
+        makeTransferEntity(forEntity);
 
         try {
             ResponseEntity<Transfers> response = restTemplate.exchange(API_Base + "transfers",

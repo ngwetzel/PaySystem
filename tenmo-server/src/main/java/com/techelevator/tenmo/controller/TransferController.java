@@ -1,8 +1,11 @@
 
 package com.techelevator.tenmo.controller;
 
+
         import com.techelevator.tenmo.dao.AccountsDao;
         import com.techelevator.tenmo.dao.TransferDao;
+
+
         import com.techelevator.tenmo.model.Transfers;
         import org.springframework.beans.factory.annotation.Autowired;
         import org.springframework.security.access.prepost.PreAuthorize;
@@ -18,6 +21,8 @@ package com.techelevator.tenmo.controller;
 public class TransferController {
 @Autowired
     private TransferDao transferDao;
+@Autowired
+private  AccountsDao accountsDao;
 
 
 
@@ -40,14 +45,16 @@ public class TransferController {
     }
 
     @RequestMapping(path = "transfers" , method = RequestMethod.POST)
-    public void makePayment(@RequestBody Transfers transfers){
-        transferDao.tenmoPay(transfers.getUserFrom(), transfers.getUserTo(), transfers.getAmount());
+    public void makePayment(@RequestBody Transfers transfers) {
+        transferDao.tenmoPay(transfers.getAccountFrom(), transfers.getAccountTo(), transfers.getAmount());
     }
 
     @RequestMapping(path = "users", method = RequestMethod.GET)
     public String[] userList(){
         return transferDao.userList();
     }
+
+
 
 
 }

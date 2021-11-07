@@ -14,9 +14,10 @@ public interface TransferDao {
 
     Transfers transferLookupWithTransferID(Long transferID);
 
-    void tenmoPay(String username, String userTo, BigDecimal amount);
+    void tenmoPay(Long accountFromId, Long accountToId, BigDecimal amount);
 
     String[] userList();//shouldn't it be List<User>
+
 
 
 }
