@@ -15,9 +15,10 @@ import java.util.List;
 public class JdbcTransferDao implements TransferDao {
     @Autowired
     private JdbcTemplate jdbcTemplate;
-    @Autowired
+@Autowired
     private AccountsDao accountsDao;
-    private UserDao userDao;
+//    private UserDao userDao;
+
 
 
     @Override
@@ -27,7 +28,7 @@ public class JdbcTransferDao implements TransferDao {
                 "FROM transfers " +
                 "Join accounts on transfers.account_from = accounts.account_id " +
                 "Join users USING(user_id) " +
-                "WHERE users.username = ?;";
+                "WHERE users.username ILIKE ?;";
         SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sql, username);
         while (rowSet.next()) {
             Transfers transfers = mapRowToTransfer(rowSet);
@@ -72,19 +73,35 @@ public class JdbcTransferDao implements TransferDao {
     }
 
 
+
+
     private Transfers mapRowToTransfer(SqlRowSet rowSet) {
         Transfers transfer = new Transfers();
-        transfer.setTransferID(rowSet.getLong("transfer_id"));
-        transfer.setTransferTypeID(rowSet.getLong("transfer_type_id"));
-        transfer.setTransferStatusID(rowSet.getLong("transfer_status_id"));
+        transfer.setTransferId(rowSet.getLong("transfer_id"));
+        transfer.setTransferTypeId(rowSet.getLong("transfer_type_id"));
+        transfer.setTransferStatusId(rowSet.getLong("transfer_status_id"));
         transfer.setAccountTo(rowSet.getLong("account_to"));
         transfer.setAccountFrom(rowSet.getLong("account_from"));
         transfer.setAmount(rowSet.getBigDecimal("amount"));
-        transfer.setUserFrom(rowSet.getString("user_from"));
-        transfer.setUserTo(rowSet.getString("user_to"));
-        transfer.setTransferType(rowSet.getString("transfer_type_desc"));//to put in transfer list details
-        transfer.setTransferStatus(rowSet.getString("transfer_status_desc"));//to put in transfer list details
         return transfer;
+    }
+
+
+
+
+    @Override
+    public void tenmoPay(Long accountFromId, Long accountToId, BigDecimal amount) {
+
+        String sql = "INSERT INTO transfers " +
+                "(transfer_type_id, transfer_status_id, account_from, account_to, amount) " +
+                "VALUES (2, 2, ?, ?, ?);";
+        jdbcTemplate.update(sql, accountFromId, accountToId, amount);
+
+        accountsDao.depositToBalance(amount, accountToId);
+        accountsDao.withdrawFromBalance(amount, accountFromId);
+        System.out.println("Successful Transfer! Your new balance is " + "$" + (accountsDao.getBalanceFromAccountId(accountFromId).subtract(amount)));
+        //  return "Successful Transfer! Your new balance is " + "$" + (accountsDao.balanceCheck(accountFrom);
+
     }
 
 

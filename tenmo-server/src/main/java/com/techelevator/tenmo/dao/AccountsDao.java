@@ -8,10 +8,13 @@ import java.security.Principal;
 public interface AccountsDao {
 
     BigDecimal getBalanceFromUserID(Long userID);
+    BigDecimal depositToBalance(BigDecimal amountToDeposit, Long accountToId);
+    BigDecimal withdrawFromBalance(BigDecimal amountToWithdraw, Long accountFromId);
+  BigDecimal getBalanceFromUserName(String username);
+    Accounts findAccountByUsername (String username);
+    String getUsernameFromAccountId (Long accountId);
+BigDecimal getBalanceFromAccountId(Long accountId);
 
-    BigDecimal depositToBalance(BigDecimal amountToDeposit, Long userTo);
-
-    BigDecimal withdrawFromBalance(BigDecimal amountToWithdraw, Long userFrom);
 
     BigDecimal getBalanceFromUserName(String username);
 

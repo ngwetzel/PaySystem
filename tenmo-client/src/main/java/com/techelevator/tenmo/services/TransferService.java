@@ -42,6 +42,22 @@ public class TransferService {
         return null;
     }
 
+    public Long getID(String user) {
+//        String username = authenticatedUser.getUser().getUsername();
+
+        Long accountID = null; // => so we can return the balance at the end
+        try {
+
+            ResponseEntity<Long> response = restTemplate.exchange(API_Base + "accounts?user=" + user,
+                    HttpMethod.GET, makeAuthEntity(), Long.class);
+            accountID = response.getBody();
+            return accountID;
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 
     public void send() {
         User[] users = null;
@@ -67,28 +83,20 @@ public class TransferService {
             boolean foundUser = false;
             for (User user : users){
 
-                if (input.equals(user.getId())){
-                    foundUser = true;
-                    tenmoTransfer.setAccountFrom( authenticatedUser.getUser().getId().longValue() );
-                    tenmoTransfer.setAccountTo(Long.valueOf(input));
-
-                    System.out.println("Enter amount: ");
-
-                    BigDecimal amount = scanner.nextBigDecimal();
-                    tenmoTransfer.setAmount(amount);
 
 
-                    ResponseEntity<Transfers> response = restTemplate.exchange(API_Base + "transfer",
-                            HttpMethod.POST, makeTransferEntity(tenmoTransfer), Transfers.class);
-                    Transfers newTransfer = response.getBody();
-                    System.out.println(newTransfer);
-                }
+        System.out.println("How much would you like to send?  ");
+        BigDecimal amount = scanner.nextBigDecimal();
+        Long accountFrom = getID(authenticatedUser.getUser().getUsername());
+        Long accountTo = getID(userTo);
 
-            }
-            if(foundUser == false) {
-                System.out.println("User ID not found please re-enter");
-            }
-
+        Transfers forEntity = new Transfers();
+        forEntity.setTransferTypeId(2L);
+        forEntity.setTransferStatusId(2L);
+       forEntity.setAccountFrom(accountFrom);
+       forEntity.setAccountTo(accountTo);
+        forEntity.setAmount(amount);
+        makeTransferEntity(forEntity);
 
 
 
@@ -183,36 +191,6 @@ public class TransferService {
 
     }
 
-
-//    public void send() {
-//    String username = authenticatedUser.getUser().getUsername();
-//    Transfers tenmoTransfer = null;
-//    Scanner scanner = new Scanner(System.in);
-//    String[] users = listUsers();
-//        System.out.println("Please choose a recipient: ");
-//        for(int i = 0; i < users.length; i++) {
-//            System.out.println(users[i]);
-//        }
-//      String userTo = scanner.nextLine();
-//
-//        System.out.println("How much would you like to send?  ");
-//        BigDecimal amount = scanner.nextBigDecimal();
-//        Transfers forEntity = new Transfers();
-//        forEntity.setUserFrom(authenticatedUser.getUser().getUsername());
-//        forEntity.setUserTo(userTo);
-//        forEntity.setAmount(amount);
-//
-//
-//        try {
-//            ResponseEntity<Transfers> response = restTemplate.exchange(API_Base + "transfers",
-//                    HttpMethod.POST, makeTransferEntity(forEntity), Transfers.class);
-//
-//
-//        } catch (Exception e) {
-//            e.getStackTrace();
-//        }
-//
-//    }
 }
 
 
