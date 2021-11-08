@@ -15,5 +15,5 @@ public interface AccountsDao {
 
     BigDecimal getBalanceFromUserName(String username);
 
-    Accounts findAccountByUsername(String username);
+    Long findAccountByUserID(Long userID);
 }

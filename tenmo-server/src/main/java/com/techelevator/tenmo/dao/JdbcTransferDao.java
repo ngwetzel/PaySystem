@@ -21,7 +21,7 @@ public class JdbcTransferDao implements TransferDao {
 
 
     @Override
-    public Transfers[] allTransfers(String username) {
+    public List<Transfers> allTransfers(String username) {
         List<Transfers> list = new ArrayList<>();
         String sql = "SELECT * " +
                 "FROM transfers " +
@@ -33,63 +33,42 @@ public class JdbcTransferDao implements TransferDao {
             Transfers transfers = mapRowToTransfer(rowSet);
             list.add(transfers);
         }
-        Transfers[] allTransfers = new Transfers[list.size()];
-        for (int i = 0; i < list.size(); i++) {
-            allTransfers[i] = (list.get(i));
-        }
-
-        return allTransfers;
+        return list;
     }
-
-
 
 
 
     @Override
     public Transfers transferLookupWithTransferID(Long transferID) {
-        Transfers transfers;
+        Transfers transfer;
         String sql = "SELECT * " +
                 "FROM transfers WHERE transfer_id = ?;";
         SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sql, transferID);
-        transfers = mapRowToTransfer(rowSet);
-
-        return transfers;
+        transfer = mapRowToTransfer(rowSet);
+        if(rowSet.next()){
+            transfer = mapRowToTransfer(rowSet);
+        }
+        return transfer;
     }
-
-//    @Override
-//    public String[] userList() {
-//        List<String> usernames = new ArrayList<>();
-//        String sql = "SELECT username FROM users;";
-//        SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sql);
-//        while (rowSet.next()) {
-//            usernames.add(rowSet.getString("username"));
-//        }
-//        String[] names = new String[usernames.size()];
-//        for (int i = 0; i < usernames.size(); i++) {
-//            names[i] = usernames.get(i);
-//        }
-//        return names;
-//    }
 
     @Override
     public Object tenmoPay(Long userFrom, Long userTo, BigDecimal amount) {
         if (userFrom.equals(userTo)) {
-            System.out.println("Invalid transfer, please try again");
+            return "Invalid transfer, please try again";
         }
-        if (amount.compareTo(accountsDao.getBalanceFromUserID(userFrom)) < 1) {
-            System.out.println("Insufficient funds for transfer");
+        if (amount.compareTo(accountsDao.getBalanceFromUserID(userFrom)) == -1) {
+            String sql = "INSERT INTO transfers " +
+                    "(transfer_type_id, transfer_status_id, account_from, account_to, amount) " +
+                    "VALUES (2, 2, ?, ?, ?);";
+            jdbcTemplate.update(sql, accountsDao.findAccountByUserID(userFrom), accountsDao.findAccountByUserID(userTo), amount);
+
+            accountsDao.depositToBalance(amount, accountsDao.findAccountByUserID(userTo));
+            accountsDao.withdrawFromBalance(amount, accountsDao.findAccountByUserID(userFrom));
+            //System.out.println("Successful Transfer! Your new balance is " + "$" + (accountsDao.getBalanceFromUserID(userTo).subtract(amount)));
+            return "Successful Transfer! Your new balance is " + "$" + (accountsDao.getBalanceFromUserID(userTo));
+        }else{
+           return "Insufficient funds for transfer";
         }
-
-        String sql = "INSERT INTO transfers " +
-                "(transfer_type_id, transfer_status_id, account_from, account_to, amount) " +
-                "VALUES (2, 2, ?, ?, ?);";
-        jdbcTemplate.update(sql, userFrom, userTo, amount);
-
-        accountsDao.depositToBalance(amount, userTo);
-        accountsDao.withdrawFromBalance(amount, userFrom);
-        //System.out.println("Successful Transfer! Your new balance is " + "$" + (accountsDao.getBalanceFromUserID(userTo).subtract(amount)));
-          return "Successful Transfer! Your new balance is " + "$" + (accountsDao.getBalanceFromUserID(userTo));
-
     }
 
 
@@ -100,11 +79,11 @@ public class JdbcTransferDao implements TransferDao {
         transfer.setTransferStatusID(rowSet.getLong("transfer_status_id"));
         transfer.setAccountTo(rowSet.getLong("account_to"));
         transfer.setAccountFrom(rowSet.getLong("account_from"));
-        transfer.setAmount(rowSet.getBigDecimal("balance"));
+        transfer.setAmount(rowSet.getBigDecimal("amount"));
         transfer.setUserFrom(rowSet.getString("user_from"));
         transfer.setUserTo(rowSet.getString("user_to"));
-        transfer.setTransferType(rowSet.getString("transfer_type"));//to put in transfer list details
-        transfer.setTransferStatus(rowSet.getString("transfer_status"));//to put in transfer list details
+        transfer.setTransferType(rowSet.getString("transfer_type_desc"));//to put in transfer list details
+        transfer.setTransferStatus(rowSet.getString("transfer_status_desc"));//to put in transfer list details
         return transfer;
     }
 

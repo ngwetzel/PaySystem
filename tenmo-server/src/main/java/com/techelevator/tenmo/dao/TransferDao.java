@@ -9,9 +9,9 @@ import java.util.List;
 
 public interface TransferDao {
 
+    List<Transfers>allTransfers(String username);
 
-
-   Transfers[] allTransfers(String username);
+   //Transfers[] allTransfers(String username);
 
     Transfers transferLookupWithTransferID(Long transferID);
 

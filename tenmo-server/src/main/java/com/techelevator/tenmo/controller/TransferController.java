@@ -30,7 +30,7 @@ public class TransferController {
 
     //don't know if I should do user or account id
     @RequestMapping(path = "/transfers", method = RequestMethod.GET)
-    public Transfers[] listAllTransfersForAccount(Principal principal){
+    public List<Transfers> listAllTransfersForAccount(Principal principal){
         return transferDao.allTransfers(principal.getName());
     }
 

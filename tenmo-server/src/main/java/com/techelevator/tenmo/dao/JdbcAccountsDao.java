@@ -17,10 +17,12 @@ public class JdbcAccountsDao implements AccountsDao{
     public BigDecimal getBalanceFromUserID(Long userID) {
         String sql = "SELECT balance FROM accounts WHERE user_id = ?;";
         SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sql, userID);
-        BigDecimal balance = rowSet.getBigDecimal("balance");
+        if(rowSet.next()){
+            BigDecimal balance = rowSet.getBigDecimal("balance");
+            return balance;
+        }
 
-        assert balance != null;
-        return balance;
+        return null;
     }
 
     @Override
@@ -36,44 +38,46 @@ public class JdbcAccountsDao implements AccountsDao{
         } return null;
     }
     @Override
-    public BigDecimal depositToBalance(BigDecimal amountToDeposit, Long userTo) {
+    public BigDecimal depositToBalance(BigDecimal amountToDeposit, Long accountTo) {
         Accounts account = new Accounts();
         BigDecimal newBalance = account.getBalance().add(amountToDeposit);
         String sql = "UPDATE accounts " +
                 "Join users USING(user_id) " +
                 "SET balance = ? " +
                 "WHERE user_id = ?;";
-        jdbcTemplate.queryForRowSet(sql, newBalance, userTo);
+        jdbcTemplate.queryForRowSet(sql, newBalance, accountTo);
 //        return newBalance;
         return account.getBalance();
     }
 
 
     @Override
-    public BigDecimal withdrawFromBalance(BigDecimal amountToWithdraw, Long userFrom) {
+    public BigDecimal withdrawFromBalance(BigDecimal amountToWithdraw, Long accountFrom) {
         Accounts account = new Accounts();
         BigDecimal newBalance = account.getBalance().subtract(amountToWithdraw);
         String sql = "UPDATE accounts " +
                 "Join users USING(user_id) " +
                 "SET balance = ? " +
                 "WHERE user_id = ?;";
-        jdbcTemplate.queryForRowSet(sql, newBalance, userFrom);
+        jdbcTemplate.queryForRowSet(sql, newBalance, accountFrom);
 //        return newBalance;
         return account.getBalance();
     }
 
 
 
-    public Accounts findAccountByUsername (String username){
-        Accounts account = null;
+    public Long findAccountByUserID (Long userID){
+        Long accountID = null;
         String sql = "SELECT account_id FROM accounts " +
                 "JOIN users USING(user_id) " +
-                "WHERE username ILIKE ?;";
-      SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sql,  "%" + username + "%");
+        //       "JOIN transfers ON account_id = account_from " +
+        //        "JOIN transfers ON account_id = account_to " +
+                "WHERE user_id = ?;";
+      SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sql,  userID);
       if(rowSet.next()){
-          account = mapRowToAccount(rowSet);
+          accountID = rowSet.getLong("account_id");
       }
-      return account;
+      return accountID;
 
     }
     private Accounts mapRowToAccount(SqlRowSet rowSet){

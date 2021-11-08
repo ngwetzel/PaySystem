@@ -50,7 +50,6 @@ public class TransferService {
             ResponseEntity<User[]> responseEntity = restTemplate.exchange(API_Base + "users",
                     HttpMethod.GET, makeAuthEntity(), User[].class);
             users = responseEntity.getBody();
-           // String input = scanner.nextLine();
             System.out.println
                     ("----------------------------------\n" +
                     "Users\n" +
@@ -64,20 +63,33 @@ public class TransferService {
             System.out.println("------------------------------------\n" +
                     "Please enter User ID to view details (0 to cancel): ");
             Scanner scanner = new Scanner(System.in);
-            String input = scanner.nextLine();
-            tenmoTransfer.setAccountTo(Long.parseLong(input));
-            tenmoTransfer.setAccountFrom(authenticatedUser.getUser().getId().longValue());
+            Integer input = scanner.nextInt();
+            boolean foundUser = false;
+            for (User user : users){
 
-            System.out.println("Enter amount: ");
+                if (input.equals(user.getId())){
+                    foundUser = true;
+                    tenmoTransfer.setAccountFrom( authenticatedUser.getUser().getId().longValue() );
+                    tenmoTransfer.setAccountTo(Long.valueOf(input));
 
-                BigDecimal amount = scanner.nextBigDecimal();
-                tenmoTransfer.setAmount(amount);
+                    System.out.println("Enter amount: ");
+
+                    BigDecimal amount = scanner.nextBigDecimal();
+                    tenmoTransfer.setAmount(amount);
 
 
-            ResponseEntity<Transfers> response = restTemplate.exchange(API_Base + "transfer",
-                    HttpMethod.POST, makeTransferEntity(tenmoTransfer), Transfers.class);
-            Transfers newTransfer = response.getBody();
-            System.out.println(newTransfer);
+                    ResponseEntity<Transfers> response = restTemplate.exchange(API_Base + "transfer",
+                            HttpMethod.POST, makeTransferEntity(tenmoTransfer), Transfers.class);
+                    Transfers newTransfer = response.getBody();
+                    System.out.println(newTransfer);
+                }
+
+            }
+            if(foundUser == false) {
+                System.out.println("User ID not found please re-enter");
+            }
+
+
 
 
         }catch(NumberFormatException ex) {
