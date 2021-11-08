@@ -13,7 +13,8 @@ import java.security.Principal;
 @Component
 public class JdbcAccountsDao implements AccountsDao{
 @Autowired
-    JdbcTemplate jdbcTemplate;
+    private JdbcTemplate jdbcTemplate;
+
 
     @Override
     public BigDecimal getBalanceFromUserID(Long userID) {
@@ -23,6 +24,18 @@ public class JdbcAccountsDao implements AccountsDao{
 
         assert balance != null;
         return balance;
+    }
+
+    @Override
+    public BigDecimal getBalanceFromAccountId(Long accountId) {
+        String sql = "SELECT balance FROM accounts WHERE account_id = ?;";
+        SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sql, accountId);
+        if (rowSet.next()) {
+            BigDecimal balance = rowSet.getBigDecimal("balance");
+            assert balance != null;
+            return balance;
+        }
+     return null;
     }
 
     @Override
@@ -38,30 +51,26 @@ public class JdbcAccountsDao implements AccountsDao{
         } return null;
     }
     @Override
-    public BigDecimal depositToBalance(BigDecimal amountToDeposit, String username) {
-        Accounts account = new Accounts();
-        BigDecimal newBalance = account.getBalance().add(amountToDeposit);
+    public BigDecimal depositToBalance(BigDecimal amountToDeposit, Long accountId) {
+//
         String sql = "UPDATE accounts " +
-                "Join users USING(user_id) " +
-                "SET balance = ? " +
-                "WHERE username = ?;";
-        jdbcTemplate.queryForRowSet(sql, newBalance, username);
+                "SET balance = balance + ? " +
+                "WHERE account_id = ?;";
+        jdbcTemplate.update(sql, amountToDeposit, accountId);
 //        return newBalance;
-        return account.getBalance();
+        return getBalanceFromAccountId(accountId);
     }
 
 
     @Override
-    public BigDecimal withdrawFromBalance(BigDecimal amountToWithdraw, String username) {
-        Accounts account = new Accounts();
-        BigDecimal newBalance = account.getBalance().subtract(amountToWithdraw);
+    public BigDecimal withdrawFromBalance(BigDecimal amountToWithdraw, Long accountId) {
+//
         String sql = "UPDATE accounts " +
-                "Join users USING(user_id) " +
-                "SET balance = ? " +
-                "WHERE username = ?;";
-        jdbcTemplate.queryForRowSet(sql, newBalance, username);
+                "SET balance = balance - ? " +
+                "WHERE account_id = ?;";
+        jdbcTemplate.update(sql, amountToWithdraw, accountId);
 //        return newBalance;
-        return account.getBalance();
+        return getBalanceFromAccountId(accountId);
     }
 
 
@@ -78,6 +87,16 @@ public class JdbcAccountsDao implements AccountsDao{
       return account;
 
     }
+
+    @Override
+    public String getUsernameFromAccountId(Long accountId) {
+        String sql = "SELECT username FROM users " +
+                "JOIN accounts USING(user_id) " +
+                "WHERE account_id = ?;";
+        return jdbcTemplate.queryForObject(sql, String.class, accountId);
+
+    }
+
     private Accounts mapRowToAccount(SqlRowSet rowSet){
         Accounts account = new Accounts();
         account.setAccountID(rowSet.getLong("account_id"));
@@ -85,4 +104,6 @@ public class JdbcAccountsDao implements AccountsDao{
         account.setBalance(rowSet.getBigDecimal("balance"));
         return account;
     }
+
+
 }

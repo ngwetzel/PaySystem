@@ -3,25 +3,24 @@ package com.techelevator.tenmo.model;
 import java.math.BigDecimal;
 
 public class Transfers {
-    private Long transferID;
-    private Long transferTypeID;
-    private Long transferStatusID;
+    private Long transferId;
+    private Long transferTypeId;
+    private Long transferStatusId;
     private Long accountFrom;
     private Long accountTo;
     private BigDecimal amount;
-    private String userFrom;
-    private String userTo;
 
-    public void setTransferID(Long transferID) {
-        this.transferID = transferID;
+
+    public void setTransferId(Long transferID) {
+        this.transferId = transferID;
     }
 
-    public void setTransferTypeID(Long transferTypeID) {
-        this.transferTypeID = transferTypeID;
+    public void setTransferTypeId(Long transferTypeID) {
+        this.transferTypeId = transferTypeID;
     }
 
-    public void setTransferStatusID(Long transferStatusID) {
-        this.transferStatusID = transferStatusID;
+    public void setTransferStatusId(Long transferStatusID) {
+        this.transferStatusId = transferStatusID;
     }
 
     public void setAccountFrom(Long accountFrom) {
@@ -32,43 +31,29 @@ public class Transfers {
         this.accountTo = accountTo;
     }
 
-    public String getUserFrom() {
-        return userFrom;
+
+
+    public Long getTransferId() {
+        return transferId;
+    }
+    public void setTransferId(long transferID) {
+        this.transferId = transferID;
     }
 
-    public void setUserFrom(String userFrom) {
-        this.userFrom = userFrom;
+    public Long getTransferTypeId() {
+        return transferTypeId;
     }
 
-    public String getUserTo() {
-        return userTo;
+    public void setTransferTypeId(long transferTypeID) {
+        this.transferTypeId = transferTypeID;
     }
 
-    public void setUserTo(String userTo) {
-        this.userTo = userTo;
+    public Long getTransferStatusId() {
+        return transferStatusId;
     }
 
-    public Long getTransferID() {
-        return transferID;
-    }
-    public void setTransferID(long transferID) {
-        this.transferID = transferID;
-    }
-
-    public Long getTransferTypeID() {
-        return transferTypeID;
-    }
-
-    public void setTransferTypeID(long transferTypeID) {
-        this.transferTypeID = transferTypeID;
-    }
-
-    public Long getTransferStatusID() {
-        return transferStatusID;
-    }
-
-    public void setTransferStatusID(long transferStatusID){
-        this.transferStatusID = transferStatusID;
+    public void setTransferStatusId(long transferStatusID){
+        this.transferStatusId = transferStatusID;
     }
 
     public Long getAccountFrom() {
