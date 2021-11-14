@@ -76,12 +76,13 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 
 	private void viewCurrentBalance() {
 		// TODO Auto-generated method stub
-TransferService transferService = new TransferService(currentUser);
+		TransferService transferService = new TransferService(currentUser);
 		try {
 			BigDecimal balance = transferService.viewBalance();
 			System.out.println("Current balance is: $" + balance);
 		} catch (NullPointerException e) {
-e.getStackTrace();
+			e.printStackTrace();
+			e.getStackTrace();
 		}
 
 	}
@@ -118,7 +119,8 @@ e.getStackTrace();
 
 	private void requestBucks() {
 		// TODO Auto-generated method stub
-		
+		TransferService transferService = new TransferService(currentUser);
+//		transferService.listTransfers();
 	}
 	
 	private void exitProgram() {
